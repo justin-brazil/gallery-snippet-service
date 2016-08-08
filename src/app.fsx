@@ -97,7 +97,9 @@ let snippets = MailboxProcessor.Start(fun inbox ->
         let json = snippets |> Array.ofList |> toJson
         writeSnippets json
         return! loop (json, snippets) }
-  loop (readSnippets()) )
+  async { 
+    try return! loop (readSnippets())
+    with e -> printfn "Agent failed: %A" e })
 
 // --------------------------------------------------------------------------------------
 // REST API for Snippets
