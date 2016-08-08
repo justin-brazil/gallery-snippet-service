@@ -124,6 +124,7 @@ let app =
   >=> setHeader "Access-Control-Allow-Headers" "content-type"
   >=> choose [
     OPTIONS >=> Successful.OK "CORS approved"
+    GET >=> path "/" >=> Successful.OK "Service is running..."
     getSnippets
     postSnippet
     likeSnippet ]
