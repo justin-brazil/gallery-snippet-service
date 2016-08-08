@@ -31,6 +31,13 @@ type Snippet =
     twitter : string
     code : string }
 
+type NewSnippet = 
+  { title : string
+    description : string
+    author : string
+    twitter : string
+    code : string }
+
 // --------------------------------------------------------------------------------------
 // Reading & writing blobs in Azure storage
 // --------------------------------------------------------------------------------------
@@ -75,7 +82,7 @@ let writeSnippets (json:string) =
 
 type Message = 
   | GetSnippets of AsyncReplyChannel<string>
-  | AddSnippet of Snippet * AsyncReplyChannel<int>
+  | AddSnippet of NewSnippet * AsyncReplyChannel<int>
   | LikeSnippet of int
 
 let snippets = MailboxProcessor.Start(fun inbox -> 
@@ -87,7 +94,9 @@ let snippets = MailboxProcessor.Start(fun inbox ->
         return! loop (json, snippets)
     | AddSnippet(snip, res) ->
         let id = 1 + (snippets |> Seq.map (fun s -> s.id) |> Seq.max)
-        let snippets = { snip with id = id }::snippets
+        let snippets = 
+          { id = id; likes = 0; posted = DateTime.Now; author = snip.author; title = snip.title
+            code = snip.code; description = snip.description; twitter = snip.twitter }::snippets
         let json = snippets |> Array.ofList |> toJson
         res.Reply(id)
         writeSnippets json
@@ -112,7 +121,7 @@ let likeSnippet =
 
 let postSnippet = 
   POST >=> path "/olympics" >=> request (fun req ctx -> async {
-    let snip = Text.Encoding.UTF8.GetString(req.rawForm) |> fromJson<Snippet>
+    let snip = Text.Encoding.UTF8.GetString(req.rawForm) |> fromJson<NewSnippet>
     let! id = snippets.PostAndAsyncReply(fun ch -> AddSnippet(snip, ch))
     return! Successful.CREATED (string id) ctx })
 
