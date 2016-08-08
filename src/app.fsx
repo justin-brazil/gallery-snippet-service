@@ -93,7 +93,7 @@ let snippets = MailboxProcessor.Start(fun inbox ->
         res.Reply(json)
         return! loop (json, snippets)
     | AddSnippet(snip, res) ->
-        let id = 1 + (snippets |> Seq.map (fun s -> s.id) |> Seq.max)
+        let id = 1 + (snippets |> Seq.map (fun s -> s.id) |> Seq.fold max 0)
         let snippets = 
           { id = id; likes = 0; posted = DateTime.Now; author = snip.author; title = snip.title
             code = snip.code; description = snip.description; twitter = snip.twitter }::snippets

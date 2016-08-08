@@ -53,7 +53,7 @@ Target "start" (fun _ ->
       System.Threading.Thread.Sleep(1000)
       printfn "Waiting for servers to start...."
   traceImportant "Servers started...."
-  System.Diagnostics.Process.Start("http://localhost:88987/") |> ignore
+  System.Diagnostics.Process.Start("http://localhost:8897/") |> ignore
 )
 
 Target "run" (fun _ ->
