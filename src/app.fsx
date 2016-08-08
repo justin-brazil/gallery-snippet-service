@@ -29,13 +29,15 @@ type Snippet =
     description : string
     author : string
     twitter : string
-    code : string }
+    code : string 
+    compiled : string }
 
 type NewSnippet = 
   { title : string
     description : string
     author : string
     twitter : string
+    compiled : string
     code : string }
 
 // --------------------------------------------------------------------------------------
@@ -95,8 +97,9 @@ let snippets = MailboxProcessor.Start(fun inbox ->
     | AddSnippet(snip, res) ->
         let id = 1 + (snippets |> Seq.map (fun s -> s.id) |> Seq.fold max 0)
         let snippets = 
-          { id = id; likes = 0; posted = DateTime.Now; author = snip.author; title = snip.title
-            code = snip.code; description = snip.description; twitter = snip.twitter }::snippets
+          { id = id; likes = 0; posted = DateTime.Now; author = snip.author; 
+            title = snip.title; compiled = snip.compiled; code = snip.code; 
+            description = snip.description; twitter = snip.twitter }::snippets
         let json = snippets |> Array.ofList |> toJson
         res.Reply(id)
         writeSnippets json
