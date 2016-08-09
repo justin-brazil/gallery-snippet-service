@@ -4,3 +4,4 @@ bin
 packages
 obj
 .fake/
+src/config.fs

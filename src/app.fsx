@@ -3,6 +3,7 @@
 #r "../packages/Suave/lib/net40/Suave.dll"
 #r "../packages/Newtonsoft.Json/lib/net40/Newtonsoft.Json.dll"
 #load "../packages/FSharp.Azure.StorageTypeProvider/StorageTypeProvider.fsx"
+#load "config.fs"
 #else
 module Logging
 #endif
@@ -44,9 +45,15 @@ type NewSnippet =
 // Reading & writing blobs in Azure storage
 // --------------------------------------------------------------------------------------
 
+#if INTERACTIVE
+let createCloudBlobClient() = 
+  let account = CloudStorageAccount.Parse(Config.TheGammaSnippetsStorage)
+  account.CreateCloudBlobClient()
+#else
 let createCloudBlobClient() = 
   let account = CloudStorageAccount.Parse(Environment.GetEnvironmentVariable("CUSTOMCONNSTR_THEGAMMASNIPS_STORAGE"))
   account.CreateCloudBlobClient()
+#endif
 
 let serializer = JsonSerializer.Create()
 
