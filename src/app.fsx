@@ -84,7 +84,6 @@ let writeSnippets (json:string) =
     blob.UploadText(json, System.Text.Encoding.UTF8)
   else failwith "container 'olympics' not found" 
 
-
 // --------------------------------------------------------------------------------------
 // Keeping current snippets using an agent
 // --------------------------------------------------------------------------------------
