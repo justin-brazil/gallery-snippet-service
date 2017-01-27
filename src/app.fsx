@@ -30,6 +30,7 @@ type Snippet =
     description : string
     author : string
     twitter : string
+    link : string
     code : string 
     compiled : string 
     version : string
@@ -41,6 +42,7 @@ type NewSnippet =
     description : string
     author : string
     twitter : string
+    link : string
     compiled : string
     code : string 
     hidden : bool
@@ -120,7 +122,7 @@ let snippets = MailboxProcessor.Start(fun inbox ->
           { id = id; likes = 0; posted = DateTime.Now; author = snip.author
             version = snip.version; hidden = snip.hidden; title = snip.title 
             compiled = snip.compiled; code = snip.code; config = snip.config 
-            description = snip.description; twitter = snip.twitter }
+            description = snip.description; twitter = snip.twitter; link = snip.link }
         let snips = Array.append snips [| snippet |]
         writeSnippets source snips
         res.Reply(id)
